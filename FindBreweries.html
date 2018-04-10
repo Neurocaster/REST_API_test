@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="author" content="Harry Miller">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<link rel="stylesheet"  href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+
+<title>Find breweries by zip code</title>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Search for breweries by zip code</h1>
+  </header>
+  <section id="fetch">
+    <input type="text" placeholder="Enter a zip code" id="code" />
+    <button type="button" class="btn btn-primary" id="clickMe">Find a brewery</button>
+  </section>
+  <section id="messages"></section>
+  <section id="results">
+    <strong>Name:</strong> <span id="brewery"></span><br>
+    <strong>Street address:</strong> <span id="address"></span><br>
+    <strong>Website:</strong> <span id="website"></span>
+  </section>
+  <footer>
+  <p>Created by <a href="http://harrymiller.net">Harry Miller</a>, the <a href="http://tunedrake.com/">Tune Drake</a></p>
+  </footer>
+</div>
+
+<script>
+$(document).ready(function(){
+    $("#code").focus(function(){
+        var full = $("#brewery").has("text").length ? true : false;
+        if(full === false){
+            $("messages").empty();
+        }
+    })
+})
+
+var getBrewery = function(){
+    var zip = $("#code").val();
+    if (zip.length === 0){
+        $("#messages").html("<h2>Enter a zip code first!</h2>");
+    } else {
+        $("#messages").html("<h2 class="loading">Searching...</h2>");
+        $.getJSON("http://api.brewerydb.com/v2/locations?key=2a753a24fade8ffb50404767ec62883d&postalCode=" + zip + "?callback=?", function(json){
+            if(json.length !== 0){
+                $("#brewery").html(json.data[0].brewery.name);
+            }
+        });
+    }
+}
+
+$("#clickMe").click(getBrewery);
+
+
+</script>
+
+</body>
+</html>
